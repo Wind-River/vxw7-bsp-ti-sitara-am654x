@@ -1,0 +1,239 @@
+/* am65x.dts - TI K3 AM65x board device tree source */
+
+/*
+modification history
+--------------------
+19feb19,whe  created (VXWPG-114)
+*/
+
+#include "prjParams.h"
+
+/dts-v1/;
+
+/   {
+    model = "TI_AM65X - Cortex-A53 (ARMV8A)";
+    compatible = "ti,am65x";
+    #address-cells = <2>;
+    #size-cells = <2>;
+    interrupt-parent = <&intc>;
+
+    cpus
+        {
+        #address-cells = <2>;
+        #size-cells = <0>;
+
+        cpu@0
+            {
+            device_type = "cpu";
+            reg = <0 0>;
+            };
+
+        cpu@1
+            {
+            device_type = "cpu";
+            reg = <0 1>;
+            };
+
+        cpu@2
+            {
+            device_type = "cpu";
+            reg = <0 0x100>;
+            };
+
+        cpu@3
+            {
+            device_type = "cpu";
+            reg = <0 0x101>;
+            };
+        };
+
+    memory
+        {
+        device_type = "memory";
+        reg = <0x0 0x80000000 0x0 0x80000000>;
+        };
+
+    aliases
+        {
+        serial0 = &uart0;
+        ethernet0 = &cpsw_port1;
+        };
+
+    chosen
+        {
+        bootargs = "cpsw(0,0)host:vxWorks h=192.168.1.1 e=192.168.1.100 u=target pw=vxTarget f=0x0";
+        stdout-path = "serial0";
+        };
+
+    soc
+        {
+        compatible = "simple-bus";
+        device_type = "soc";
+        #address-cells = <2>;
+        #size-cells = <2>;
+        reset_control = <0x4301817C>; /* CTRLMMR_WKUP_MCU_WARM_RST_CTRL register */
+
+        intc: interrupt-controller@1800000
+            {
+            compatible = "arm,gic-v3";
+            interrupt-controller;
+            #interrupt-cells = <4>;
+            reg = <0x00 0x01800000 0x00 0x10000>,   /* GICD */
+                  <0x00 0x01880000 0x00 0x90000>;   /* GICR */
+
+            max-int-lvl = <991>;
+            };
+
+        timer0: timer
+            {
+            compatible = "arm,arm-gen-timer";
+            interrupts = <29 1 4 0        /* Physical Secure */
+                          30 1 4 0        /* Physical Non-Secure */
+                          27 1 4 0        /* Virtual */
+                          26 1 4 0>;      /* Hypervisor */
+
+            interrupt-parent = <&intc>;
+            };
+
+        dmtimer0: timer@2400000
+            {
+            compatible = "ti,dmtimer";
+            reg = <0x00 0x2400000 0x00 0x80>;
+            interrupts = <256 0 4 0>;
+            interrupt-parent = <&intc>;          
+            clock-frequency = <25000000>;
+            };
+            
+        dmtimer1: timer@2410000
+            {
+            compatible = "ti,dmtimer";
+            reg = <0x00 0x2410000 0x00 0x80>;
+            interrupts = <257 0 4 0>;
+            interrupt-parent = <&intc>;          
+            clock-frequency = <25000000>;
+            };
+            
+        wkup_i2c0: i2c@42120000
+            {
+            compatible = "ti,am38xx-i2c";
+            reg = <0x0 0x42120000 0x0 0x100>;
+            interrupts = <728 0 4 0>;
+            interrupt-parent = <&intc>;
+            clock-frequency = <96000000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            eeprom@54
+                {
+                compatible = "at24, at24c256";
+                data-scl-frequency = <400000>;
+                reg = <0x54>;
+                };          
+            };
+            
+        i2c0: i2c@2000000
+            {
+            compatible = "ti,am38xx-i2c";
+            reg = <0x0 0x2000000 0x0 0x100>,
+                  <0x0 0x0011C000 0x0 0x20000>;
+            interrupts = <232 0 4 0>;
+            interrupt-parent = <&intc>;
+            clock-frequency = <96000000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            rtc@6f
+                {
+                compatible  = "microchip,mcp79410";
+                reg = <0x6f>;
+                };
+            };
+
+        i2c1: i2c@2010000
+            {
+            compatible = "ti,am38xx-i2c";
+            reg = <0x0 0x2010000 0x0 0x100>;
+            interrupts = <233 0 4 0>;
+            interrupt-parent = <&intc>;
+            clock-frequency = <96000000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            };
+
+        i2c2: i2c@2020000
+            {
+            compatible = "ti,am38xx-i2c";
+            reg = <0x0 0x2020000 0x0 0x100>;
+            interrupts = <234 0 4 0>;
+            interrupt-parent = <&intc>;
+            clock-frequency = <96000000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            };
+
+        i2c3: i2c@2030000
+            {
+            compatible = "ti,am38xx-i2c";
+            reg = <0x0 0x2030000 0x0 0x100>;
+            interrupts = <235 0 4 0>;
+            interrupt-parent = <&intc>;
+            clock-frequency = <96000000>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            };
+
+        uart0: serial@2800000
+            {
+            compatible  = "ti,am5-uart";
+            reg         = <0x0 0x2800000 0x0 0x1000>;
+            interrupts  = <224 0 1 0>;
+            interrupt-parent = <&intc>;
+            clock-frequency = <48000000>;
+            };
+
+        spi@2100000
+            {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            compatible = "ti,am335x-spi";
+            reg = <0x0 0x02100000 0x0 0x400>,
+                  <0x0 0x0011C000 0x0 0x20000>;
+            interrupts = <216 0 4 0>;
+            interrupt-parent = <&intc>;
+            spiflash@0 /* mt25q128 */
+                {
+                #address-cells = <1>;
+                #size-cells = <1>;
+                compatible = "spiflash";
+                spi-max-frequency = <48000000>;
+                reg = <0>;
+                };
+            };
+
+        mcu_cpsw: ethernet@46000000
+            {
+            compatible  = "ti,am65x-cpsw-nuss";
+            reg = <0x0 0x46000000 0x0 0x200000>;
+
+            cpsw_port1: port@1                    /* port device*/
+                {
+                device_type    = "network";
+                compatible     = "ti,k3-cpsw-port";
+                #address-cells = <1>;
+                #size-cells    = <0>;
+                cpsw-port-index  = <1>;
+                cpsw-gmac-offset = <0x22330>;
+                cpsw-port-offset = <0x208>;
+                local-mac-address = [ 00 18 31 e0 a8 32 ];
+                phy-handle = <&phy0>;
+                phy0: ethernet-phy@0
+                    {
+                    compatible = "tiDpPhy";
+                    reg = <0>;
+                    rgmii-delay = <0x3>;
+                    rx-internal-delay = <0x8>;
+                    tx-internal-delay = <0xa>;
+                    fifo-depth = <0x1>;
+                    };
+                };
+            };
+        };
+    };/* end of root */
