@@ -60,7 +60,7 @@ The ti_k3 PSL is installed at:
 ***installDir***/vxworks-7/pkgs_v2/unsupported/ti_k3_am65x/ti_k3-W.X.Y.Z
 ```
 If the installed version of BSP/PSL is the same or newer than the Open Source BSP published 
-here, there's no need to download and install the Open Source BSP form GitHub again. 
+here, there's no need to download and install the Open Source BSP from GitHub again. 
 
 If your existing VxWorks 7 installation contains older version of ti_k3_am65x BSP and ti_k3
 PSL, it's recommended to download the latest code from GitHub and then install.
@@ -76,11 +76,11 @@ cd vxw7-bsp-ti-sitara-am654x
 ### Installation
 
 There are two ways to install this BSP: inside existing VxWorks 7 installation or outside
-existing VxWorks-7 installation.
+existing VxWorks 7 installation.
 
 #### Install into the source tree
 
-All layers in this BSP goes to their respective destination among the existing installation. 
+All layers in this BSP go to their respective destination among the existing installation. 
 The advantage is the BSP will always be accessible once you complete the installation. The 
 disadvantage is you can't shut down this BSP unless you manually delete all the installed 
 layers among the source tree.
@@ -107,7 +107,7 @@ or Workbench:
 export WIND_LAYER_PATHS=/home/ti_k3_am65x
 export WIND_BSP_PATHS=/home/ti_k3_am65x
 ```
-then enter into the existing VxWorks-7 installation directory
+then enter into the existing VxWorks 7 installation directory
 ```Bash
 cd ***installDir***
 ```
@@ -160,8 +160,7 @@ The detailed introduction of these drivers and usage can also be found in target
 
 All product names, logos, and brands are property of their respective owners. All company, product 
 and service names used in this software are for identification purposes only. Wind River and VxWorks 
-are registered trademarks of Wind River Systems. Raspberry Pi are registered trademarks of the 
-Raspberry Pi Foundation.
+are registered trademarks of Wind River Systems. 
 
 Disclaimer of Warranty / No Support: Wind River does not provide support and maintenance services 
 for this software, under Wind River’s standard Software Support and Maintenance Agreement or otherwise. 
